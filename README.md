@@ -2,7 +2,7 @@
 
 <img src="./cover.png" alt="Password Generation Cover" width="100%">
 
-# 🛡️ Password Generation & Analyzer - v1.4
+# 🛡️ Password Generation & Analyzer - v1.5
 **A modern, scalable and secure password utility project.**
 **Un proyecto de utilidad de contraseñas moderno, escalable y seguro.**
 
@@ -27,15 +27,15 @@
 
 ## 🇪🇸 Español
 
-### 🚀 Sobre esta versión (v1.4)
-En la iteración de la **v1.4**, el concepto arquitectónico abandona la naturaleza de "Página Única" (Single Page Layout). Expandiendo toda la base de datos a un ecosistema web con múltiples subpáginas, especializando cada una.
+### 🚀 Sobre esta versión (v1.5)
+La versión **1.5** priorizó una reducción estelar en la duplicación de código e impulsó por primera vez directrices de abstracción y desarrollo basado en de plantillas conjuntas visuales en HTML en las diversas "páginas".
 
 ### ⚠️ Configuración de Base de Datos
-Debes conectarte a través del archivo de intermediario de API en `js/api.php`. Por favor inscribe allí tu servidor, usuario, contraseña (reemplazando los tags `TU_DB_...`) de lo contrario tu base métrica visual regresará código 503 o 500 de error en tu consola.
+Debes rellenar las credenciales nulas contenidas en el archivo `js/api.php` colocando tus propias directivas como el `USER` y tu `PASS` nativo de conexión relacional a tu DB pre-creada.
 
-### 📝 Novedades de la versión (Changelog vs v1.3)
-* **Web de Páginas Múltiples:** División de la única base hacia módulos dedicados hiper-enfocados (`home.html`, `generatorpass.html`, `analizador.html`).
-* **Soporte Dinámico de Guías:** Ahora el "Generador" y el "Analizador" tienen guías completas individuales (`guia-analizador.html` y `guia-generatorpass.html`) en lugar de saturar al usuario con una sola super-guía visual.
+### 📝 Novedades de la versión (Changelog vs v1.4)
+* **Modularidad y DRY:** Principios de *No Te Repitas* (Don't Repeat Yourself) aplicados trasladando toda la enorme sección de navegación repetida a un solo factor: `header.html`.
+* Esta es la antesala final al sistema de componentes nativos, limpiando el cuerpo general de cada vista para que solo contenga lo que realmente necesita renderizar en medio.
 
 ### ⚖️ Licencia y Uso (No Open Source)
 El código está disponible de forma "solo lectura" (Read-only) para demostrar código e historia. No se otorgan permisos comerciales, de distribución ni modificación (Todos los Derechos Reservados).
@@ -45,15 +45,15 @@ El código está disponible de forma "solo lectura" (Read-only) para demostrar c
 
 ## 🇬🇧 English
 
-### 🚀 About this version (v1.4)
-The **v1.4 iterative update** definitively abandons the former "Single Page Layout" approach. Expanding the core application toward an ecosystem hosting several targeted inner pages splitting their utility properly.
+### 🚀 About this version (v1.5)
+The **1.5 branch timeline** prioritized significantly shaving down redundant lines of code directly enforcing clean UI and structural templating approaches among all rendered layouts dynamically.
 
 ### ⚠️ Database Rules
-Database connection bindings occur at `js/api.php`. Before running this version locally, you must provide your literal MySQL connection credentials overwriting placeholders values like `TU_DB_PASS`.
+Blank nullified database connections found within `js/api.php` must explicitly point towards your preconfigured hosting schema supplying real string texts replacing tags like `TU_DB_PASS`.
 
-### 📝 Changelog vs v1.3
-* **Multi-Page Web Deployment:** A major transformation dividing monolithic assets mapping them properly directly forming dedicated subpages like `generatorpass.html` and `analizador.html`.
-* **Individual Contextualized Guides:** Developed specifically tailored multi-guides (`guia-analizador.html`, `guia-generatorpass.html`) to stop overwhelming readers with an enormous single manual.
+### 📝 Changelog vs v1.4
+* **Modularity and DRY Rules:** Refactored entire project's navigational tree header mapping, cutting all replicated boilerplate code migrating it completely into `header.html`.
+* Paved the architectural path setting rules preparing the way for components. Subpage size mapping drastically optimized by shifting repetitive UI.
 
 ### ⚖️ License and Usage Terms (Not Open Source)
 This is available as read-only to showcase programming proficiency and evolution. You may not distribute, host, or take commercial advantage of this codebase without direct authorization (All Rights Reserved).
