@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <title>Guía del Analizador - Password Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .section-full {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .formula {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: rgba(240, 240, 240, 0.6);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #8e8e93;
+            font-size: 1.25rem;
+            color: #1d1d1f;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+        .formula .variable {
+            color: #58585d;
+            font-weight: bold;
+        }
+        .formula .exponent {
+            color: #ff9500;
+            font-weight: bold;
+            font-size: 1rem;
+            vertical-align: super;
+            margin-left: -8px;
+        }
+        .main-btn {
+            background-color: #007aff;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            transform: scale(1);
+        }
+        .main-btn:hover {
+            transform: translateY(-2px);
+            background-color: #0056b3;
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.2);
+        }
+        .parallax-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .parallax-blob {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(80px);
+            opacity: 0.5;
+            will-change: transform;
+        }
+        .blob1 { width: 40vw; height: 40vw; top: 10%; left: -10%; background-color: rgba(255, 59, 48, 0.15); } /* Rojo Apple */
+        .blob2 { width: 30vw; height: 30vw; bottom: -20%; right: -5%; background-color: rgba(255, 204, 0, 0.2); } /* Amarillo Apple */
+        .blob3 { width: 35vw; height: 35vw; top: 50%; right: -15%; background-color: rgba(10, 132, 255, 0.15); } /* Azul Apple (diferente) */
+        .blob4 { width: 25vw; height: 25vw; top: 80%; left: 5%; background-color: rgba(48, 209, 88, 0.15); } /* Verde Apple (diferente) */
+        .blob5 { width: 40vw; height: 40vw; top: 150%; left: -10%; background-color: rgba(255, 59, 48, 0.15); }
+        .blob6 { width: 30vw; height: 30vw; top: 220%; right: -10%; background-color: rgba(255, 204, 0, 0.2); }
+        .blob7 { width: 35vw; height: 35vw; top: 350%; left: -15%; background-color: rgba(10, 132, 255, 0.15); }
+        .section-content {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition-delay: 0.1s;
+        }
+        .section-full.is-visible .section-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-full.is-visible .section-content > * {
+            transition-delay: calc(0.15s * var(--stagger-index, 1));
+        }
+        .menu-dropdown {
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform-origin: top;
+        }
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom-color: rgba(229, 229, 229, 0.8);
+        }
+        /* Estilos para el menú móvil y de escritorio */
+        .menu-dropdown.is-open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        /* Hamburger icon animation */
+        .menu-button svg {
+            transition: transform 0.3s ease;
+        }
+        .menu-button.is-open svg {
+            transform: rotate(90deg); /* Rotates the hamburger icon */
+        }
+
+        /* Base styles for menu-dropdown (mobile-first, full-screen by default) */
+        .menu-dropdown {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 6rem 2rem 2rem 2rem; /* More padding top/horizontal */
+            background-color: rgba(245, 245, 247, 0.95); /* Semi-transparent background */
+            backdrop-filter: blur(30px);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Space between links */
+            align-items: flex-start; /* Align items to the left */
+            z-index: 40; /* Ensure it's above everything else */
+            opacity: 0;
+            transform: translateY(-100%); /* Slide from top */
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+        .menu-dropdown a {
+            font-size: 1.75rem; /* Larger text for mobile */
+            font-weight: 600; /* Semibold */
+            padding: 0.5rem 0;
+            text-align: left;
+            color: #6b7280; /* Lighter text color for inactive links */
+            opacity: 0;
+            transform: translateY(15px);
+            transition: color 0.2s ease, opacity 0.4s ease, transform 0.4s ease;
+        }
+        /* Animación del icono Hamburguesa a X */
+        .hamburger-line {
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            transform-origin: center;
+        }
+        .menu-button.is-open .hamburger-line.top {
+            transform: translateY(6px) rotate(45deg);
+        }
+        .menu-button.is-open .hamburger-line.middle {
+            opacity: 0;
+        }
+        .menu-button.is-open .hamburger-line.bottom {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+        /* Staggered animation for menu items */
+        .menu-dropdown.is-open a {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(0.1s + 0.05s * var(--stagger-index, 1));
+        }
+        .menu-dropdown a.font-semibold { /* Active link style */
+            color: #1d1d1f;
+            font-weight: 700; /* Bold for active */
+        }
+        .menu-overlay {
+            z-index: 39; /* Below the menu, above content */
+        }
+
+        /* Desktop styles for menu-dropdown (override mobile styles) */
+        @media (min-width: 640px) { /* Tailwind's 'sm' breakpoint */
+            .menu-dropdown { position: absolute; right: 0; top: calc(100% + 0.5rem); width: 12rem; height: auto; padding-top: 0.5rem; background-color: transparent; backdrop-filter: none; display: block; justify-content: initial; align-items: initial; z-index: 30; opacity: 0; transform: translateY(-0.5rem) scale(0.95); pointer-events: none; }
+            .menu-button.is-open + .menu-dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+            .menu-dropdown > div { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid rgba(229, 229, 229, 0.7); padding: 0; display: block; gap: 0; }
+            .menu-dropdown a { font-size: 0.875rem; padding: 0.5rem 1rem; text-align: left; border-radius: 0; background-color: transparent; border: none; box-shadow: none; color: #6b7280; }
+            .menu-dropdown a:hover { background-color: rgba(229, 229, 229, 0.4); }
+            .menu-dropdown a.font-semibold { background-color: rgba(229, 229, 229, 0.6); color: #1d1d1f; }
+            .menu-overlay { display: none; }
+        }
+    </style>
+        /* Estilos para la navegación de escritorio */
+        .desktop-nav a {
+            color: #6b7280; /* Gris sutil */
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .desktop-nav a:hover {
+            color: #1d1d1f; /* Negro al pasar el cursor */
+        }
+        .desktop-nav a.active {
+            color: #1d1d1f; /* Negro para la página activa */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 antialiased">
+
+    <div class="parallax-bg-container">
+        <!-- ... blobs ... -->
+        <div class="parallax-blob blob1" data-speed="0.4"></div>
+        <div class="parallax-blob blob2" data-speed="0.6"></div>
+        <div class="parallax-blob blob3" data-speed="0.3"></div>
+        <div class="parallax-blob blob4" data-speed="0.7"></div>
+        <div class="parallax-blob blob5" data-speed="0.5"></div>
+        <div class="parallax-blob blob6" data-speed="0.4"></div>
+        <div class="parallax-blob blob7" data-speed="0.6"></div>
+    </div>
+
+    <!-- Overlay para el menú móvil -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/20 z-20 hidden"></div>
+
+    <header id="main-header" class="border-b border-transparent fixed top-0 left-0 right-0 z-30 transition-all duration-300">
+        <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="index.html" class="flex items-center space-x-2">
+                        <img src="../assets/logo.png" alt="Password Generation Logo" class="h-8 w-auto">
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900">Password Generation</span>
+                    </a>
+                </div>
+
+                <!-- Navegación de Escritorio (visible en sm y superior) -->
+                <div class="hidden sm:flex sm:items-center sm:space-x-8 desktop-nav">
+                    <a href="index.html">Generador</a>
+                    <a href="herramientas.html" title="Herramientas">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </a>
+                    <a href="analizador.html">Analizador</a>
+                </div>
+
+                <!-- Botón de Menú Móvil (visible debajo de sm) -->
+                <div class="sm:hidden" id="menu-container">
+                    <button id="menu-button" class="menu-button flex items-center justify-center text-gray-600 hover:text-gray-900 p-2 rounded-md transition-colors">
+                        <!-- Hamburger Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path class="hamburger-line top" d="M4 6h16"></path>
+                            <path class="hamburger-line middle" d="M4 12h16"></path>
+                            <path class="hamburger-line bottom" d="M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Panel de Menú Móvil -->
+        <div class="menu-dropdown" id="mobile-menu">
+            <a href="herramientas.html" style="--stagger-index: 1;">Inicio</a>
+            <a href="index.html" style="--stagger-index: 2;">Generador</a>
+            <a href="analizador.html" style="--stagger-index: 3;">Analizador</a>
+        </div>
+    </header>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+        <!-- Header -->
+        <header class="text-center py-24 section-full">
+            <div class="section-content">
+                <h2 class="text-2xl md:text-3xl font-semibold text-gray-500" style="--stagger-index: 1;">Analizador de Contraseñas</h2>
+                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-1d1d1f mt-4 leading-tight" style="--stagger-index: 2;">
+                    Conocimiento.<br>Es poder.
+                </h1>
+                <p class="mt-8 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 3;">
+                    Descubre qué hace a tu contraseña fuerte o débil. Analizamos tu seguridad al instante, bit por bit. Tu privacidad es total: el análisis se hace 100% en tu navegador.
+                </p>
+            </div>
+        </header>
+
+        <!-- Guía de Uso -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Análisis Instantáneo.<br>En dos simples pasos.
+            </h3>
+            <div class="section-content">
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-3xl mx-auto">
+                    <div class="text-center" style="--stagger-index: 1;">
+                        <div class="flex items-center justify-center h-16 w-16 mx-auto bg-gray-200 rounded-full mb-4">
+                            <span class="text-2xl font-bold text-gray-600">1</span>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Pega o Escribe</h4>
+                        <p class="text-gray-600 text-sm">Introduce la contraseña que quieres evaluar. No se envía a ningún servidor, garantizando tu privacidad.</p>
+                    </div>
+                    <div class="text-center" style="--stagger-index: 2;">
+                        <div class="flex items-center justify-center h-16 w-16 mx-auto bg-gray-200 rounded-full mb-4">
+                            <span class="text-2xl font-bold text-gray-600">2</span>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Interpreta los Resultados</h4>
+                        <p class="text-gray-600 text-sm">Observa cómo la barra de fuerza, los bits de entropía y el tiempo de crackeo reaccionan en tiempo real a cada carácter que añades.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Intro a la Teoría -->
+        <section class="text-center section-full">
+            <div class="section-content">
+                <h2 class="text-2xl md:text-3xl font-semibold text-gray-500" style="--stagger-index: 1;">El Fundamento del Análisis</h2>
+                <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold text-1d1d1f mt-4 leading-tight" style="--stagger-index: 2;">
+                    ¿Cómo medimos la fortaleza?
+                </h1>
+                <p class="mt-8 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 3;">
+                    No es una opinión, es un cálculo. El analizador deconstruye tu contraseña para medir su complejidad real y predecir cuánto tiempo le tomaría a un ordenador moderno descifrarla.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sección 1: Deconstrucción -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Paso 1: Identificar los <span class="text-gray-600">ingredientes</span>.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    Lo primero que hace el analizador es escanear tu contraseña para ver qué "alfabetos" o conjuntos de caracteres estás usando.
+                    <strong class="block mt-2">¿Contiene solo minúsculas? ¿O una mezcla de símbolos, números y mayúsculas?</strong>
+                </p>
+                <div class="mt-12" style="--stagger-index: 2;">
+                    <p class="font-mono text-xl sm:text-2xl md:text-3xl text-gray-400">
+                        <span class="text-black font-bold">P@ssw0rd123</span>
+                    </p>
+                    <svg class="w-10 h-10 inline-block my-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <div class="flex items-center justify-center gap-2 md:gap-4 flex-wrap font-mono text-sm text-gray-700">
+                        <div class="bg-gray-200 p-2 rounded">a-z (26)</div>
+                        <span class="text-gray-400 font-bold">+</span>
+                        <div class="bg-gray-200 p-2 rounded">A-Z (26)</div>
+                        <span class="text-gray-400 font-bold">+</span>
+                        <div class="bg-gray-200 p-2 rounded">0-9 (10)</div>
+                        <span class="text-gray-400 font-bold">+</span>
+                        <div class="bg-gray-200 p-2 rounded">!@# (1)</div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Alfabeto Total = 26 + 26 + 10 + 1 = <strong class="text-black">63</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Entropía -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Paso 2: Calcular la <span class="text-purple-500">entropía</span>.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    Con el tamaño del alfabeto y la longitud de tu contraseña, calculamos su "entropía" en bits. Es la medida real de su imprevisibilidad. Cada bit añadido <strong class="text-black">duplica</strong> la dificultad para un atacante.
+                </p>
+                <div class="mt-12" style="--stagger-index: 2;">
+                    <div class="formula">
+                        log₂(<span class="variable">N</span><span class="exponent">L</span>)
+                    </div>
+                    <p class="mt-4 text-sm sm:text-base text-gray-500">Bits = logaritmo en base 2 de (Alfabeto <sup class="text-orange-500">Longitud</sup>)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Tiempo de Crackeo -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Paso 3: Traducirlo a <span class="text-orange-500">tiempo</span>.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    Los "bits" son abstractos. Para hacerlo tangible, calculamos cuánto tiempo le tomaría a un ordenador potente (realizando 10 mil millones de intentos por segundo) adivinar tu contraseña por fuerza bruta.
+                </p>
+                <div class="mt-12" style="--stagger-index: 2;">
+                    <div class="formula">
+                        (2<span class="exponent">Bits</span>) / 20,000,000,000
+                    </div>
+                    <p class="mt-4 text-sm sm:text-base text-gray-500">Tiempo (seg) = (Combinaciones Totales) / (Intentos por segundo)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 4: ¿Y ahora qué? -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                ¿Tu contraseña es débil?<br>No hay problema.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    Si el resultado es "días", "meses" o incluso "pocos años", tu contraseña es vulnerable. La buena noticia es que ahora lo sabes. El siguiente paso es crear una que tarde <strong class="text-black">miles de millones de años</strong> en ser descifrada.
+                </p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto" style="--stagger-index: 2;">
+                    <a href="analizador.html" class="inline-block py-3 px-6 text-lg main-btn bg-gray-500">
+                        ← Volver al Analizador
+                    </a>
+                    <a href="index.html" class="inline-block py-3 px-6 text-lg main-btn">
+                        Ir al Generador →
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="text-center py-8 relative z-10 bg-transparent">
+        <p class="text-xs text-gray-400" id="copyright"></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const blobs = document.querySelectorAll('.parallax-blob');
+            function handleScroll() {
+                const scrollY = window.scrollY;
+                blobs.forEach(blob => {
+                    const speed = parseFloat(blob.dataset.speed) || 0.5;
+                    const movement = -(scrollY * speed);
+                    blob.style.transform = `translateY(${movement}px)`;
+                });
+            }
+            window.addEventListener('scroll', () => window.requestAnimationFrame(handleScroll), { passive: true });
+
+            const sections = document.querySelectorAll('.section-full');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.6
+            });
+            sections.forEach(section => observer.observe(section));
+
+            // Script para el efecto del header al hacer scroll
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 10) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Script para el menú táctil/click
+            const menuContainer = document.getElementById('menu-container');
+            const menuButton = document.getElementById('menu-button');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                menuButton.classList.toggle('is-open');
+                menuOverlay.classList.toggle('hidden');
+                mobileMenu.classList.toggle('is-open');
+            });
+
+            // Cierra el menú si se hace clic fuera de él
+            document.addEventListener('click', (event) => {
+                if (!mobileMenu.contains(event.target) && !menuContainer.contains(event.target) && menuButton.classList.contains('is-open')) {
+                    menuButton.classList.remove('is-open');
+                    mobileMenu.classList.remove('is-open');
+                    menuOverlay.classList.add('hidden');
+                }
+            });
+
+            // Copyright
+            document.getElementById('copyright').textContent = `© ${new Date().getFullYear()} Password Generation. Todos los derechos reservados.`;
+        });
+    </script>
+</body>
+</html>
