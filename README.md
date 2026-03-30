@@ -2,7 +2,7 @@
 
 <img src="./cover.png" alt="Password Generation Cover" width="100%">
 
-# 🛡️ Password Generation & Analyzer - v1.2
+# 🛡️ Password Generation & Analyzer - v1.4
 **A modern, scalable and secure password utility project.**
 **Un proyecto de utilidad de contraseñas moderno, escalable y seguro.**
 
@@ -27,15 +27,15 @@
 
 ## 🇪🇸 Español
 
-### 🚀 Sobre esta versión (v1.2)
-En esta versión se introdujeron múltiples **hitos arquitectónicos**. Se pasó de un monolito plano a un proyecto organizado profesionalmente con integración de base de datos a través de Backend.
+### 🚀 Sobre esta versión (v1.4)
+En la iteración de la **v1.4**, el concepto arquitectónico abandona la naturaleza de "Página Única" (Single Page Layout). Expandiendo toda la base de datos a un ecosistema web con múltiples subpáginas, especializando cada una.
 
 ### ⚠️ Configuración de Base de Datos
-**Si la instalas:** Requiere base de datos MySQL. Debes ir al directorio principal y configurar `php/api.php` sustituyendo los placeholders (ej. `TU_DB_PASS`) con tus credenciales reales antes de abrir la web, de lo contrario dará error de conexión a DB.
+Debes conectarte a través del archivo de intermediario de API en `js/api.php`. Por favor inscribe allí tu servidor, usuario, contraseña (reemplazando los tags `TU_DB_...`) de lo contrario tu base métrica visual regresará código 503 o 500 de error en tu consola.
 
-### 📝 Novedades de la versión (Changelog vs v1.0)
-* **Reorganización Estructural:** Implementadas carpetas individuales y estrictas para `/php`, `/js`, `/css`, `/docs` y `/assets`.
-* **Backend Stats Tracker:** Se ha programado la API en PHP para comunicar y renderizar estadísticas globales en tiempo real en la vista final de la web (contraseñas servidas y escaneadas). 
+### 📝 Novedades de la versión (Changelog vs v1.3)
+* **Web de Páginas Múltiples:** División de la única base hacia módulos dedicados hiper-enfocados (`home.html`, `generatorpass.html`, `analizador.html`).
+* **Soporte Dinámico de Guías:** Ahora el "Generador" y el "Analizador" tienen guías completas individuales (`guia-analizador.html` y `guia-generatorpass.html`) en lugar de saturar al usuario con una sola super-guía visual.
 
 ### ⚖️ Licencia y Uso (No Open Source)
 El código está disponible de forma "solo lectura" (Read-only) para demostrar código e historia. No se otorgan permisos comerciales, de distribución ni modificación (Todos los Derechos Reservados).
@@ -45,15 +45,15 @@ El código está disponible de forma "solo lectura" (Read-only) para demostrar c
 
 ## 🇬🇧 English
 
-### 🚀 About this version (v1.2)
-This iteration introduces huge **architectural milestones**. The app transitioned from a flat monolith to a professionally organized layout with a brand-new backend connection setup tracking real usage logic.
+### 🚀 About this version (v1.4)
+The **v1.4 iterative update** definitively abandons the former "Single Page Layout" approach. Expanding the core application toward an ecosystem hosting several targeted inner pages splitting their utility properly.
 
-### ⚠️ Database Configuration
-**Before testing:** You are required to possess a MySQL Database environment. Edit `php/api.php` and fill the placeholder properties (like `TU_DB_PASS`) with your real database records.
+### ⚠️ Database Rules
+Database connection bindings occur at `js/api.php`. Before running this version locally, you must provide your literal MySQL connection credentials overwriting placeholders values like `TU_DB_PASS`.
 
-### 📝 Changelog vs v1.0
-* **Structure Organization:** Adopted a disciplined folder distribution mapping with `/html`, `/js`, `/css`, `/docs`, and `/assets` directories.
-* **Backend Integrations:** A PHP API system structure was deployed specifically to monitor and broadcast global statistics onto the webpage (number of passwords generated, etc.).
+### 📝 Changelog vs v1.3
+* **Multi-Page Web Deployment:** A major transformation dividing monolithic assets mapping them properly directly forming dedicated subpages like `generatorpass.html` and `analizador.html`.
+* **Individual Contextualized Guides:** Developed specifically tailored multi-guides (`guia-analizador.html`, `guia-generatorpass.html`) to stop overwhelming readers with an enormous single manual.
 
 ### ⚖️ License and Usage Terms (Not Open Source)
 This is available as read-only to showcase programming proficiency and evolution. You may not distribute, host, or take commercial advantage of this codebase without direct authorization (All Rights Reserved).

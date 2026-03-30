@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía y Fundamento Teórico - Generador de Contraseñas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-snap-type: y mandatory; /* Habilita el scroll-snap vertical obligatorio */
+            scroll-behavior: smooth; /* Añade el desplazamiento animado */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7; /* Fondo claro de Apple */
+            color: #1d1d1f; /* Texto oscuro principal */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .section-full {
+            height: 100vh; /* Cada sección ocupa la altura completa de la ventana */
+            scroll-snap-align: start; /* Alinea cada sección al inicio del viewport */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .section-card {
+            background: rgba(255, 255, 255, 0.7); /* Blanco semitransparente */
+            border: 1px solid rgba(229, 229, 229, 0.7); /* Borde sutil y semitransparente */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra más suave */
+            backdrop-filter: blur(20px); /* Efecto liquid glass */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); /* Sombra ligeramente más pronunciada al hover */
+        }
+        .formula {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: rgba(240, 240, 240, 0.6); /* Fondo semitransparente */
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #8e8e93; /* Gris de acento */
+            font-size: 1.25rem; /* text-xl */
+            color: #1d1d1f;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+        .formula .variable {
+            color: #58585d; /* Gris oscuro para la variable */
+            font-weight: bold;
+        }
+        .formula .exponent {
+            color: #ff9500; /* Naranja de acento */
+            font-weight: bold;
+            font-size: 1rem; /* text-base */
+            vertical-align: super;
+            margin-left: -8px;
+        }
+        .set-box {
+            background-color: rgba(240, 240, 240, 0.6); /* Fondo semitransparente */
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            color: #333;
+            border: 1px dashed rgba(204, 204, 204, 0.7); /* Borde sutil y semitransparente */
+        }
+        .set-operator {
+            font-size: 1.5rem; /* text-2xl */
+            color: #8e8e93; /* Gris de acento */
+            font-weight: bold;
+        }
+        /* Estilo Liquid Glass para el botón */
+        .main-btn {
+            background-color: #007aff;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 9999px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        .main-btn:hover {
+            transform: translateY(-2px); /* Elevar al pasar el cursor */
+            background-color: #0056b3;
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.2);
+        }
+        .main-btn:active {
+            transform: translateY(0px) scale(0.98); /* Efecto de presión */
+            transition-duration: 0.1s;
+        }
+        /* Estilos para el fondo con efecto Parallax */
+        .parallax-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Detrás de todo el contenido */
+            overflow: hidden;
+        }
+        .parallax-blob {
+            position: absolute;
+            border-radius: 9999px; /* Círculo perfecto */
+            filter: blur(80px); /* Desenfoque muy pronunciado */
+            opacity: 0.5;
+            will-change: transform; /* Optimización para la animación */
+        }
+        .blob1 {
+            width: 40vw;
+            height: 40vw;
+            top: 10%;
+            left: -10%;
+            background-color: rgba(0, 122, 255, 0.2); /* Azul Apple */
+        }
+        .blob2 {
+            width: 30vw;
+            height: 30vw;
+            bottom: -20%;
+            right: -5%;
+            background-color: rgba(255, 149, 0, 0.2); /* Naranja Apple */
+        }
+        .blob3 {
+            width: 35vw;
+            height: 35vw;
+            top: 50%;
+            right: -15%;
+            background-color: rgba(52, 199, 89, 0.15); /* Verde Apple */
+        }
+        .blob4 {
+            width: 25vw;
+            height: 25vw;
+            top: 80%;
+            left: 5%;
+            background-color: rgba(175, 82, 222, 0.15); /* Púrpura Apple */
+        }
+        .blob5 {
+            width: 40vw;
+            height: 40vw;
+            top: 150%;
+            left: -10%;
+            background-color: rgba(0, 122, 255, 0.2); /* Azul Apple */
+        }
+        .blob6 {
+            width: 30vw;
+            height: 30vw;
+            top: 220%;
+            right: -10%;
+            background-color: rgba(255, 149, 0, 0.2); /* Naranja Apple */
+        }
+        .blob7 {
+            width: 35vw;
+            height: 35vw;
+            top: 350%;
+            left: -15%;
+            background-color: rgba(52, 199, 89, 0.15); /* Verde Apple */
+        }
+        /* Estilos para la animación de entrada de las secciones */
+        .section-content {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition-delay: 0.1s; /* Retraso reducido para una respuesta más rápida */
+        }
+        .section-full.is-visible .section-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-full.is-visible .section-content > * {
+            transition-delay: calc(0.15s * var(--stagger-index, 1)); /* Staggering más suave */
+        }
+        .menu-dropdown {
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform-origin: top;
+        }
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border-bottom-color: rgba(229, 229, 229, 0.8);
+        }
+        /* Estilos para el menú móvil y de escritorio */
+        .menu-dropdown.is-open {
+            opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        .menu-button.is-open .hamburger-line.top { transform: translateY(6px) rotate(45deg); }
+        .menu-button.is-open .hamburger-line.middle { opacity: 0; }
+        .menu-button.is-open .hamburger-line.bottom { transform: translateY(-6px) rotate(-45deg); }
+        .hamburger-line { transition: transform 0.3s ease, opacity 0.2s ease; transform-origin: center; }
+        #mobile-menu {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; padding: 6rem 2rem 2rem 2rem;
+            background-color: rgba(245, 245, 247, 0.95); backdrop-filter: blur(30px);
+            display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;
+            z-index: 40; opacity: 0; transform: translateY(-100%);
+            transition: opacity 0.4s ease, transform 0.4s ease; pointer-events: none;
+        }
+        #mobile-menu a {
+            font-size: 1.75rem; font-weight: 600; padding: 0.5rem 0; text-align: left; color: #6b7280;
+            opacity: 0; transform: translateY(15px); transition: color 0.2s ease, opacity 0.4s ease, transform 0.4s ease;
+        }
+        #mobile-menu.is-open a {
+            opacity: 1; transform: translateY(0); transition-delay: calc(0.1s + 0.05s * var(--stagger-index, 1));
+        }
+        #mobile-menu a.font-semibold { color: #1d1d1f; font-weight: 700; }
+        .desktop-nav a { color: #6b7280; font-weight: 600; transition: color 0.2s ease; display: flex; align-items: center; }
+        .desktop-nav a:hover { color: #1d1d1f; }
+        .desktop-nav a.active { color: #1d1d1f; }
+        .desktop-nav a.active svg { fill: #1d1d1f; }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 antialiased">
+
+    <div class="parallax-bg-container">
+        <!-- ... blobs ... -->
+        <div class="parallax-blob blob1" data-speed="0.4"></div> <div class="parallax-blob blob2" data-speed="0.6"></div> <div class="parallax-blob blob3" data-speed="0.3"></div> <div class="parallax-blob blob4" data-speed="0.7"></div> <div class="parallax-blob blob5" data-speed="0.5"></div> <div class="parallax-blob blob6" data-speed="0.4"></div> <div class="parallax-blob blob7" data-speed="0.6"></div>
+    </div>
+
+    <!-- Overlay para el menú móvil -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/20 z-40 hidden"></div>
+
+    <header id="main-header" class="border-b border-transparent fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="home.html" class="flex items-center space-x-2">
+                        <img src="assets/logo.png" alt="Password Generation Logo" class="h-8 w-auto">
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900">Password Generation</span>
+                    </a>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center sm:space-x-8 desktop-nav">
+                    <a href="home.html" title="Herramientas" class="active">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    </a>
+                    <a href="generatorpass.html">Generador</a>
+                    <a href="analizador.html">Analizador</a>
+                </div>
+
+                <div class="sm:hidden" id="menu-container">
+                    <button id="menu-button" class="menu-button z-50 relative flex items-center justify-center text-gray-600 hover:text-gray-900 p-2 rounded-md transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path class="hamburger-line top" d="M4 6h16"></path>
+                            <path class="hamburger-line middle" d="M4 12h16"></path>
+                            <path class="hamburger-line bottom" d="M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="menu-dropdown" id="mobile-menu">
+            <a href="home.html" class="font-semibold" style="--stagger-index: 1;">Inicio</a>
+            <a href="generatorpass.html" style="--stagger-index: 2;">Generador</a>
+            <a href="analizador.html" style="--stagger-index: 3;">Analizador</a>
+        </div>
+    </header>
+
+    <div class="max-w-5xl mx-auto relative z-10 pt-16">
+        <!-- Header -->
+        <header class="text-center py-24 section-full">
+            <div class="section-content">
+                <h2 class="text-2xl md:text-3xl font-semibold text-gray-500" style="--stagger-index: 1;">Generador de Contraseñas</h2>
+                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-1d1d1f mt-4 leading-tight" style="--stagger-index: 2;">
+                    Seguridad.<br>Hecha simple.
+                </h1>
+                <p class="mt-8 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 3;">
+                    Descubre la ciencia detrás de una contraseña robusta. No es magia, es matemática diseñada para protegerte.
+                </p>
+            </div>
+        </header>
+
+        <!-- Guía de Uso -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Control Total.<br>En tres simples pasos.
+            </h3>
+            <div class="section-content">
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+                    <div class="text-center" style="--stagger-index: 1;">
+                        <div class="flex items-center justify-center h-16 w-16 mx-auto bg-gray-200 rounded-full mb-4">
+                            <span class="text-2xl font-bold text-gray-600">1</span>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Define la Longitud</h4>
+                        <p class="text-gray-600 text-sm">Arrastra el control deslizante o interactúa directamente con el gráfico. Más longitud significa una seguridad exponencialmente mayor.</p>
+                    </div>
+                    <div class="text-center" style="--stagger-index: 2;">
+                        <div class="flex items-center justify-center h-16 w-16 mx-auto bg-gray-200 rounded-full mb-4">
+                            <span class="text-2xl font-bold text-gray-600">2</span>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Elige tu Alfabeto</h4>
+                        <p class="text-gray-600 text-sm">Selecciona los conjuntos de caracteres que necesites. Cada opción que añades multiplica las combinaciones posibles.</p>
+                    </div>
+                    <div class="text-center" style="--stagger-index: 3;">
+                        <div class="flex items-center justify-center h-16 w-16 mx-auto bg-gray-200 rounded-full mb-4">
+                            <span class="text-2xl font-bold text-gray-600">3</span>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Genera y Analiza</h4>
+                        <p class="text-gray-600 text-sm">Un clic para crear una contraseña única. La fuerza y el tiempo de crackeo se calculan y visualizan al instante.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Separador / Intro a la Teoría -->
+        <section class="text-center section-full">
+            <div class="section-content">
+                <h2 class="text-2xl md:text-3xl font-semibold text-gray-500" style="--stagger-index: 1;">El Fundamento Teórico</h2>
+                <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold text-1d1d1f mt-4 leading-tight" style="--stagger-index: 2;">
+                    La Ciencia Detrás de la Seguridad.
+                </h1>
+                <p class="mt-8 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 3;">
+                    No es magia. Es un sistema robusto basado en principios matemáticos probados que garantizan la aleatoriedad y complejidad de cada contraseña.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sección 1: Conjuntos -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Todo comienza con la <span class="text-gray-600">variedad</span>.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    Piensa en cada tipo de carácter como un grupo de bloques de construcción. Al combinar minúsculas, mayúsculas, números y símbolos, creas un universo de posibilidades mucho más grande.
+                    <strong class="block mt-2">Este es tu "alfabeto" total.</strong></p>
+                <div class="mt-12 flex items-center justify-center gap-2 md:gap-4 flex-wrap" style="--stagger-index: 2;">
+                    <div class="set-box">a-z</div>
+                    <div class="set-operator">∪</div>
+                    <div class="set-box">A-Z</div>
+                    <div class="set-operator">∪</div>
+                    <div class="set-box">0-9</div>
+                    <div class="set-operator">∪</div>
+                    <div class="set-box">!@#</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Combinatoria -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                Luego, se multiplica por la <span class="text-orange-500">longitud</span>.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    La fortaleza de una contraseña crece de forma exponencial. Cada carácter que añades no solo suma, sino que <strong class="text-black">multiplica</strong> las combinaciones posibles, haciendo que sea infinitamente más difícil de adivinar.
+                </p>
+                <div class="mt-12" style="--stagger-index: 2;">
+                    <div class="formula">
+                        <span class="variable">N</span><span class="exponent">L</span>
+                    </div>
+                    <p class="mt-4 text-sm sm:text-base text-gray-500">Combinaciones = (Tamaño del Alfabeto) elevado a la (Longitud)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Aleatoriedad -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                La clave es la <span class="text-green-500">aleatoriedad</span> pura.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    Una contraseña predecible es una contraseña débil. Para evitar cualquier patrón (como que el primer carácter sea siempre una mayúscula), el generador <strong class="text-black">baraja o permuta</strong> todos los caracteres al final. El resultado es caos impredecible.
+                </p>
+                <div class="mt-12 font-mono text-xl sm:text-2xl md:text-3xl" style="--stagger-index: 2;">
+                    <span class="text-gray-400">P@ss123!</span>
+                    <svg class="w-10 h-10 inline-block mx-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    <span class="text-black font-bold">s!P3@12s</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 4: Entropía -->
+        <section class="text-center section-full">
+            <h3 class="text-4xl sm:text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+                El resultado: <span class="text-purple-500">entropía</span> medible.
+            </h3>
+            <div class="section-content">
+                <p class="mt-6 text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600" style="--stagger-index: 1;">
+                    La fuerza no es una opinión, se mide en <strong class="text-black">"bits de entropía"</strong>. Cada bit que se añade duplica la dificultad para un atacante. Una contraseña con 80 bits es 2⁸⁰ veces más difícil de adivinar que una de 0 bits. Nuestro generador te muestra esta medida en tiempo real.
+                </p>
+                <div class="mt-12 w-full max-w-md mx-auto" style="--stagger-index: 2;">
+                    <div class="flex justify-between text-sm text-gray-500 mb-2">
+                        <span>Fuerza</span>
+                        <span class="font-medium text-gray-800">Excelente (128+ bits)</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-3 rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500" style="width: 100%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4">log₂(N<sup class="text-orange-500">L</sup>) = Bits de Entropía</p>
+                </div>
+                <div class="mt-12" style="--stagger-index: 3;">
+                    <a href="generatorpass.html" class="inline-block py-3 px-8 text-lg main-btn">
+                        ← Volver al Generador
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const blobs = document.querySelectorAll('.parallax-blob');
+
+            function handleScroll() {
+                const scrollY = window.scrollY;
+                blobs.forEach(blob => {
+                    const speed = parseFloat(blob.dataset.speed) || 0.5;
+                    const movement = -(scrollY * speed);
+                    blob.style.transform = `translateY(${movement}px)`;
+                });
+            }
+
+            window.addEventListener('scroll', () => window.requestAnimationFrame(handleScroll), { passive: true });
+
+            // Intersection Observer para animar las secciones al entrar
+            const sections = document.querySelectorAll('.section-full');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // Opcional: remover la clase para que la animación se repita al volver a scrollear
+                        // entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.6 // La animación se dispara cuando el 60% de la sección es visible para un efecto más centrado
+            });
+            sections.forEach(section => observer.observe(section));
+
+            // Script para el efecto del header al hacer scroll
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 10) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Script para el menú táctil/click
+            const menuContainer = document.getElementById('menu-container');
+            const menuButton = document.getElementById('menu-button');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const isOpen = menuButton.classList.toggle('is-open');
+                menuOverlay.classList.toggle('hidden', !isOpen);
+                mobileMenu.classList.toggle('is-open', isOpen);
+                document.body.style.overflow = isOpen ? 'hidden' : '';
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!mobileMenu.contains(event.target) && !menuContainer.contains(event.target) && menuButton.classList.contains('is-open')) {
+                    menuButton.classList.remove('is-open');
+                    mobileMenu.classList.remove('is-open');
+                    menuOverlay.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
