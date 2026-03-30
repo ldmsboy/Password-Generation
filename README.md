@@ -2,7 +2,7 @@
 
 <img src="./cover.png" alt="Password Generation Cover" width="100%">
 
-# 🛡️ Password Generation & Analyzer - v1.2
+# 🛡️ Password Generation & Analyzer - v1.3
 **A modern, scalable and secure password utility project.**
 **Un proyecto de utilidad de contraseñas moderno, escalable y seguro.**
 
@@ -27,15 +27,14 @@
 
 ## 🇪🇸 Español
 
-### 🚀 Sobre esta versión (v1.2)
-En esta versión se introdujeron múltiples **hitos arquitectónicos**. Se pasó de un monolito plano a un proyecto organizado profesionalmente con integración de base de datos a través de Backend.
+### 🚀 Sobre esta versión (v1.3)
+Esta versión enfoca sus mejoras casi íntegramente en la **reestructuración profunda del directorio raíz** para seguir estándares de jerarquía de software. Separando el acceso "público/seguro" de los "recursos nativos" (src/public).
 
 ### ⚠️ Configuración de Base de Datos
-**Si la instalas:** Requiere base de datos MySQL. Debes ir al directorio principal y configurar `php/api.php` sustituyendo los placeholders (ej. `TU_DB_PASS`) con tus credenciales reales antes de abrir la web, de lo contrario dará error de conexión a DB.
+Esta versión contiene código dinámico. Debes abrir el archivo respectivo de API (ahora localizado en `public/api.php`) y reemplazar las variables neutrales como `TU_DB_NAME` con la información verdadera de un gestor de MySQL para que funcionen los módulos métricos de la interfaz.
 
-### 📝 Novedades de la versión (Changelog vs v1.0)
-* **Reorganización Estructural:** Implementadas carpetas individuales y estrictas para `/php`, `/js`, `/css`, `/docs` y `/assets`.
-* **Backend Stats Tracker:** Se ha programado la API en PHP para comunicar y renderizar estadísticas globales en tiempo real en la vista final de la web (contraseñas servidas y escaneadas). 
+### 📝 Novedades de la versión (Changelog vs v1.2)
+* **Reorganización Estructural (Patrón Public/Src):** Todo el código backend y los componentes visuales disponibles a la red externa migraron a un folder `public/`, dejando apartados en `src/` componentes y recursos vitales blindados. Separación moderna del front vs back.
 
 ### ⚖️ Licencia y Uso (No Open Source)
 El código está disponible de forma "solo lectura" (Read-only) para demostrar código e historia. No se otorgan permisos comerciales, de distribución ni modificación (Todos los Derechos Reservados).
@@ -45,15 +44,14 @@ El código está disponible de forma "solo lectura" (Read-only) para demostrar c
 
 ## 🇬🇧 English
 
-### 🚀 About this version (v1.2)
-This iteration introduces huge **architectural milestones**. The app transitioned from a flat monolith to a professionally organized layout with a brand-new backend connection setup tracking real usage logic.
+### 🚀 About this version (v1.3)
+This version applies severe effort into **directory hierarchy refactoring**, introducing modern industry standards such as separating "public" exposure spaces vs internal source blocks (src).
 
 ### ⚠️ Database Configuration
-**Before testing:** You are required to possess a MySQL Database environment. Edit `php/api.php` and fill the placeholder properties (like `TU_DB_PASS`) with your real database records.
+Configuring your API environment is required. You must visit `public/api.php` and swap blank properties like `TU_DB_NAME` substituting your true MySQL deployment environment settings to avoid interface errors.
 
-### 📝 Changelog vs v1.0
-* **Structure Organization:** Adopted a disciplined folder distribution mapping with `/html`, `/js`, `/css`, `/docs`, and `/assets` directories.
-* **Backend Integrations:** A PHP API system structure was deployed specifically to monitor and broadcast global statistics onto the webpage (number of passwords generated, etc.).
+### 📝 Changelog vs v1.2
+* **Structure Approach (Public/Src Pattern):** Structural migration pulling front-end served assets into `public/` boundary keeping safe `src/` internal implementations separate. Better software scale practice achieved.
 
 ### ⚖️ License and Usage Terms (Not Open Source)
 This is available as read-only to showcase programming proficiency and evolution. You may not distribute, host, or take commercial advantage of this codebase without direct authorization (All Rights Reserved).
