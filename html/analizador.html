@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <title>Analizador de Contraseñas - Password Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Animación para la aparición de resultados */
+        .result-item {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .result-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .input-field {
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        /* Estilos para la navegación de escritorio */
+        .desktop-nav a {
+            color: #6b7280; /* Gris sutil */
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .desktop-nav a:hover {
+            color: #1d1d1f; /* Negro al pasar el cursor */
+        }
+        .desktop-nav a.active {
+            color: #1d1d1f; /* Negro para la página activa */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Overlay para el menú móvil -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/20 z-20 hidden"></div>
+
+    <header id="main-header" class="border-b border-transparent sticky top-0 z-20 transition-all duration-300">
+        <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="index.html" class="flex items-center space-x-2">
+                        <img src="../assets/logo.png" alt="Password Generation Logo" class="h-8 w-auto">
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900">Password Generation</span>
+                    </a>
+                </div>
+
+                <!-- Navegación de Escritorio (visible en sm y superior) -->
+                <div class="hidden sm:flex sm:items-center sm:space-x-8 desktop-nav">
+                    <a href="index.html">Generador</a>
+                    <a href="herramientas.html" title="Herramientas">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </a>
+                    <a href="analizador.html" class="active">Analizador</a>
+                </div>
+
+                <!-- Botón de Menú Móvil (visible debajo de sm) -->
+                <div class="sm:hidden" id="menu-container">
+                    <button id="menu-button" class="menu-button flex items-center justify-center text-gray-600 hover:text-gray-900 p-2 rounded-md transition-colors">
+                        <!-- Hamburger Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path class="hamburger-line top" d="M4 6h16"></path>
+                            <path class="hamburger-line middle" d="M4 12h16"></path>
+                            <path class="hamburger-line bottom" d="M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Panel de Menú Móvil -->
+        <div class="menu-dropdown" id="mobile-menu">
+            <a href="herramientas.html" style="--stagger-index: 1;">Inicio</a>
+            <a href="index.html" style="--stagger-index: 2;">Generador</a>
+            <a href="analizador.html" class="font-semibold" style="--stagger-index: 3;">Analizador</a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 flex-col">
+        <div class="card w-full max-w-lg p-6 sm:p-8 space-y-6 sm:space-y-8 card-enter">
+            <h1 class="text-2xl sm:text-3xl font-semibold text-center text-1d1d1f">
+                Analizador de Contraseñas
+            </h1>
+
+            <div class="space-y-6">
+                <!-- Entrada de Contraseña -->
+                <div class="relative">
+                    <label for="password-input-analyzer" class="text-sm text-gray-500 mb-2 block">Escribe o pega una contraseña para analizar su fortaleza</label>
+                    <input type="text" id="password-input-analyzer" placeholder="Tu contraseña aquí..." 
+                           class="input-field w-full p-3 rounded-lg bg-gray-100 text-base sm:text-lg font-mono text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                </div>
+
+                <!-- Barra de fuerza -->
+                <div class="mt-4 result-item" id="strength-bar-container">
+                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>Fuerza</span>
+                        <span id="strength-display" aria-live="polite" class="font-medium text-gray-800">N/A</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full overflow-hidden">
+                        <div id="strength-bar" class="strength-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+                
+                <!-- Tiempo estimado de crackeo -->
+                <div id="time-to-crack-section" class="text-center pt-4 space-y-2 result-item">
+                    <div>
+                        <p class="text-sm text-gray-600">Tiempo estimado para crackear:</p>
+                        <p id="time-to-crack-display" class="break-words text-base sm:text-lg font-semibold text-gray-800 mt-1">Ingresa una contraseña para analizar.</p>
+                        <p class="text-xs text-gray-400">(Asumiendo 10 mil millones de intentos/seg)</p>
+                    </div>
+                </div>
+
+                <button id="analyze-btn"
+                        class="w-full py-3 rounded-lg main-btn text-base hidden transition-all">
+                    Analizar contraseña
+                </button>
+            </div>
+
+            <div class="text-center mt-4 space-y-2">
+                <div>
+                    <a href="guia-analizador.html" class="text-sm text-gray-500 hover:text-gray-800 transition-colors hover:underline">¿Cómo funciona este análisis?</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Estadísticas -->
+        <div class="card w-full max-w-lg p-6 mt-6">
+            <div class="text-center grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div>
+                    <p id="passwords-scanned-stat" class="stat-number text-4xl sm:text-5xl font-bold text-gray-800"></p>
+                    <p class="text-sm text-gray-500 mt-1">Contraseñas analizadas</p>
+                </div>
+                <div>
+                    <p id="users-served-stat" class="stat-number text-4xl sm:text-5xl font-bold text-gray-800"></p>
+                    <p class="text-sm text-gray-500 mt-1">Usuarios protegidos</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-8">
+        <p class="text-xs text-gray-400" id="copyright"></p>
+    </footer>
+
+    <script src="../js/menu.js" defer></script>
+    <script src="../js/stats.js" defer></script>
+    <script src="../js/analizador.js" defer></script>
+</body>
+</html>
