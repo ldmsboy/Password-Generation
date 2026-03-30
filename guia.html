@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía y Fundamento Teórico - Generador de Contraseñas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+        }
+        .section-card {
+            /* Efecto Glassmorphism */
+            background: rgba(31, 41, 55, 0.5); /* #1F2937 con 50% de opacidad */
+            border: 1px solid #374151;
+            backdrop-filter: blur(16px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .formula {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #111827;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #34D399;
+            font-size: 1.5rem;
+            color: #F9FAFB;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+        .formula .variable {
+            color: #6EE7B7;
+            font-weight: bold;
+        }
+        .formula .exponent {
+            color: #FBBF24;
+            font-weight: bold;
+            font-size: 1.1rem;
+            vertical-align: super;
+            margin-left: -8px;
+        }
+        .set-viz {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .set-box {
+            background-color: #374151;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            color: #D1D5DB;
+            border: 1px dashed #4B5563;
+        }
+        .set-operator {
+            font-size: 2rem;
+            color: #34D399;
+            font-weight: bold;
+        }
+        /* Animación para el fondo */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+            animation: blob 8s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <!-- Contenedor del fondo blur animado -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-green-500/20 rounded-full filter blur-3xl animate-blob"></div>
+        <div class="absolute bottom-[-20%] right-[-15%] w-[60vw] h-[60vw] bg-purple-500/20 rounded-full filter blur-3xl animate-blob" style="animation-delay: -4s;"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto space-y-12">
+        <!-- Header -->
+        <header class="text-center my-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-white">
+                <span class="text-green-400">Guía Visual</span> del Generador
+            </h1>
+            <p class="mt-4 text-lg text-gray-400">Entiende cómo funciona el generador y la matemática que lo hace seguro.</p>
+        </header>
+
+        <!-- Guía de Uso -->
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-8">Guía de Uso Rápida</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Step 1 -->
+                <div class="section-card p-6 rounded-xl text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">1. Ajusta la Longitud</h3>
+                    <p class="text-gray-400 text-sm">Usa la barra deslizante. Más longitud = más seguridad.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="section-card p-6 rounded-xl text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2. Elige Caracteres</h3>
+                    <p class="text-gray-400 text-sm">Marca las casillas que necesites. Más variedad = más difícil de adivinar.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="section-card p-6 rounded-xl text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">3. Genera y Copia</h3>
+                    <p class="text-gray-400 text-sm">Presiona "Generar" y luego el ícono para copiarla al portapapeles.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="section-card p-6 rounded-xl text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">4. Mide la Fuerza</h3>
+                    <p class="text-gray-400 text-sm">La barra de colores te indica qué tan segura es tu contraseña en bits.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fundamento Teórico -->
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-2">La Magia de las <span class="text-green-400">Matemáticas Discretas</span></h2>
+            <p class="text-center text-gray-400 mb-8">La seguridad de tu contraseña no es magia, es matemática pura.</p>
+
+            <div class="space-y-8">
+                <!-- Teoría de Conjuntos -->
+                <div class="section-card rounded-xl overflow-hidden md:flex">
+                    <div class="p-6 md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-2">1. Teoría de Conjuntos</h3>
+                        <p class="text-gray-300">Cada tipo de carácter es un <strong class="text-white">conjunto</strong>. Al marcar las casillas, unes estos conjuntos para crear un "alfabeto" más grande y complejo desde el cual se elegirá tu contraseña.</p>
+                    </div>
+                    <div class="p-6 bg-gray-800/50 md:w-1/2 flex items-center justify-center">
+                        <div class="set-viz">
+                            <div class="set-box">a-z</div>
+                            <div class="set-operator">∪</div>
+                            <div class="set-box">A-Z</div>
+                            <div class="set-operator">∪</div>
+                            <div class="set-box">0-9</div>
+                            <div class="set-operator">=</div>
+                            <div class="set-box text-green-400 border-green-400">Alfabeto Total</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combinatoria -->
+                <div class="section-card rounded-xl overflow-hidden md:flex flex-row-reverse">
+                    <div class="p-6 md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-2">2. Combinatoria y Probabilidad</h3>
+                        <p class="text-gray-300">La fortaleza se mide por el número total de combinaciones. La fórmula es simple pero poderosa: el tamaño del alfabeto (<span class="font-mono text-green-400">N</span>) elevado a la longitud de la contraseña (<span class="font-mono text-yellow-400">L</span>).</p>
+                    </div>
+                    <div class="p-6 bg-gray-800/50 md:w-1/2 flex items-center justify-center text-center">
+                        <div>
+                            <div class="formula">
+                                <span class="variable">N</span><span class="exponent">L</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2">Más combinaciones = Más seguridad</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permutaciones -->
+                <div class="section-card rounded-xl overflow-hidden md:flex">
+                    <div class="p-6 md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-2">3. Permutaciones Aleatorias</h3>
+                        <p class="text-gray-300">Para evitar patrones (como que el primer carácter sea siempre una mayúscula), el generador <strong class="text-white">baraja o permuta</strong> todos los caracteres al final. Esto asegura una aleatoriedad total en el orden.</p>
+                    </div>
+                    <div class="p-6 bg-gray-800/50 md:w-1/2 flex items-center justify-center text-center">
+                        <div class="font-mono text-lg">
+                            <span class="text-gray-400">P@ss123!</span>
+                            <svg class="w-8 h-8 inline-block mx-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            <span class="text-white font-bold">s!P3@12</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entropía -->
+                <div class="section-card rounded-xl overflow-hidden md:flex flex-row-reverse">
+                    <div class="p-6 md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-2">4. Entropía (Bits de Seguridad)</h3>
+                        <p class="text-gray-300">La "Fuerza" se mide en <strong class="text-white">bits de entropía</strong>. Cada bit duplica la dificultad para un atacante. Una contraseña con 80 bits de entropía requeriría 2⁸⁰ intentos para ser adivinada, ¡un número con 25 dígitos!</p>
+                    </div>
+                    <div class="p-6 bg-gray-800/50 md:w-1/2 flex flex-col items-center justify-center text-center">
+                        <div class="w-full bg-gray-600 rounded-lg overflow-hidden">
+                            <div class="bg-green-500 text-xs font-medium text-blue-100 text-center p-1 leading-none rounded-lg" style="width: 75%">75% (Fuerte)</div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2">log₂(N<sup class="text-yellow-400">L</sup>) = Bits de Entropía</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-6">
+            <a href="index.html" class="inline-block bg-green-500 text-gray-900 font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition-colors">
+                ← Volver al Generador
+            </a>
+        </footer>
+    </div>
+
+</body>
+</html>
