@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="./cover.png" alt="Password Generation Cover" width="100%">
+<img src="./cover.png" alt="Password Generation Cover" width="30%">
 
-# 🛡️ Password Generation & Analyzer - v1.5
+# 🛡️ Password Generation & Analyzer - v1.4
 **A modern, scalable and secure password utility project.**
 **Un proyecto de utilidad de contraseñas moderno, escalable y seguro.**
 
@@ -27,13 +27,13 @@
 
 ## 🇪🇸 Español
 
-### 🚀 Sobre esta versión (v1.5)
+### 🚀 Sobre esta versión (v1.4)
 La versión **1.5** priorizó una reducción estelar en la duplicación de código e impulsó por primera vez directrices de abstracción y desarrollo basado en de plantillas conjuntas visuales en HTML en las diversas "páginas".
 
 ### ⚠️ Configuración de Base de Datos
 Debes rellenar las credenciales nulas contenidas en el archivo `js/api.php` colocando tus propias directivas como el `USER` y tu `PASS` nativo de conexión relacional a tu DB pre-creada.
 
-### 📝 Novedades de la versión (Changelog vs v1.4)
+### 📝 Novedades de la versión (Changelog vs v1.3)
 * **Modularidad y DRY:** Principios de *No Te Repitas* (Don't Repeat Yourself) aplicados trasladando toda la enorme sección de navegación repetida a un solo factor: `header.html`.
 * Esta es la antesala final al sistema de componentes nativos, limpiando el cuerpo general de cada vista para que solo contenga lo que realmente necesita renderizar en medio.
 
@@ -45,13 +45,13 @@ El código está disponible de forma "solo lectura" (Read-only) para demostrar c
 
 ## 🇬🇧 English
 
-### 🚀 About this version (v1.5)
+### 🚀 About this version (v1.4)
 The **1.5 branch timeline** prioritized significantly shaving down redundant lines of code directly enforcing clean UI and structural templating approaches among all rendered layouts dynamically.
 
 ### ⚠️ Database Rules
 Blank nullified database connections found within `js/api.php` must explicitly point towards your preconfigured hosting schema supplying real string texts replacing tags like `TU_DB_PASS`.
 
-### 📝 Changelog vs v1.4
+### 📝 Changelog vs v1.3
 * **Modularity and DRY Rules:** Refactored entire project's navigational tree header mapping, cutting all replicated boilerplate code migrating it completely into `header.html`.
 * Paved the architectural path setting rules preparing the way for components. Subpage size mapping drastically optimized by shifting repetitive UI.
 
